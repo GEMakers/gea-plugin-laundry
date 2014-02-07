@@ -43,7 +43,8 @@ function Laundry (bus, appliance, base) {
     
     appliance.dryerServiceErrorCodes = appliance.erd({
         erd: base++,
-        format: "Bytes"
+        endian: "big",
+        format: "UInt32"
     });
     
     appliance.dsmOverridesAllowed = appliance.erd({
@@ -85,17 +86,20 @@ function Laundry (bus, appliance, base) {
     
     appliance.washerUserInterfaceServiceErrorCodes = appliance.erd({
         erd: base++,
-        format: "Bytes"
+        endian: "big",
+        format: "UInt32"
     });
     
     appliance.washerInverterServiceErrorCodes = appliance.erd({
         erd: base++,
-        format: "Bytes"
+        endian: "big",
+        format: "UInt32"
     });
     
     appliance.washerMainControlServiceErrorCodes = appliance.erd({
         erd: base++,
-        format: "Bytes"
+        endian: "big",
+        format: "UInt32"
     });
     
     appliance.operatingMode = appliance.erd({

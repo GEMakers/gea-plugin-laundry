@@ -1,6 +1,6 @@
 {
     "name" : "gea-plugin-laundry",
-    "description" : "Dishwasher plugin for General Electric Appliance SDK",
+    "description" : "Laundry plugin for General Electric Appliance SDK",
     "homepage" : "http://www.ge.com/",
     "keywords" : [ "GE", "GEA", "SDK", "General Electric", "laundry" ],
     "author" : "Christopher Baker <christopher.baker2@ge.com>",

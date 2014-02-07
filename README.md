@@ -398,7 +398,6 @@ The following is a list of the available machine states and their enumerated val
 | 6       | Delay run           |
 | 7       | Delay pause         |
 | 8       | Drain timeout       |
-| 9-127   | Reserved            |
 | 128     | Clean speak         |
 
 ### Machine sub cycle
@@ -417,7 +416,6 @@ The following is a list of the available machine sub cycles and their enumerated
 | 8       | Extra rinse         |
 | 9       | Tumble              |
 | 10      | Load size detection |
-| 11-127  | Not used            |
 | 128     | Drying              |
 | 129     | Mist steam          |
 | 130     | Cool down           |
@@ -511,7 +509,6 @@ The following is a list of the available cycle selected states and their enumera
 | 17      | Power clean                     |
 | 18      | Rinse and spin                  |
 | 19      | Single item wash                |
-| 20-127  | Reserved                        |
 | 128     | Cottons                         |
 | 129     | Easy care                       |
 | 130     | Active wear                     |

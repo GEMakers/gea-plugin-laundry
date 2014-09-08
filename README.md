@@ -1,30 +1,29 @@
-# Laundry Plugin for the GEA SDK
+# Laundry
+**General Electric Appliances Laundry Software Development Kit**
 
-This node.js package provides functionality for communicating with a clothes washer and clothes dryer via the [GEA SDK](https://github.com/GEMakers/gea-sdk).
+This node.js package provides functionality for communicating with a clothes washer or dryer via the [General Electric Appliance Software Development Kit](https://github.com/GEMakers/gea-sdk). In order to use this software, you must first connect your appliance to your computer using the [Green Bean](https://github.com/GEMakers/green-bean).
 
-## Table of Contents
+## Overview
 
-- [Installation](#installation)
-- [API](#laundry-api)
-  - [bus.on("laundry", callback)](#busonlaundry-callback)
-    - [laundry.machineStatus](#laundrymachinestatus)
-    - [laundry.machineSubCycle](#laundrymachinesubcycle)
-    - [laundry.endOfCycle](#laundryendofcycle)
-    - [laundry.cycleCount](#laundrycyclecount)
-    - [laundry.dryerServiceErrorCodes](#laundrydryerserviceerrorcodes)
-    - [laundry.dsmOverridesAllowed](#laundrydsmoverridesallowed)
-    - [laundry.maximumWaterTemperature](#laundrymaximumwatertemperature)
-    - [laundry.timeRemainingInSeconds](#laundrytimetemaininginseconds)
-    - [laundry.tankStatus](#laundrytankstatus)
-    - [laundry.tankSelected](#laundrytankselected)
-    - [laundry.cycleSelected](#laundrycycleselected)
-    - [laundry.washerUserInterfaceServiceErrorCodes](#laundrywasheruserinterfaceserviceerrorcodes)
-    - [laundry.washerInverterServiceErrorCodes](#laundrywasherinverterserviceerrorcodes)
-    - [laundry.washerMainControlServiceErrorCodes](#laundrywashermaincontrolserviceerrorcodes)
-    - [laundry.operatingMode](#laundryoperatingmode)
-    - [laundry.dryerCriticalResponseEnabled](#laundrydryercriticalresponseenabled)
-    - [laundry.delayTimeRemainingInMinutes](#laundrydelaytimeremaininginminutes)
-- [Appendix](#appendix)
+1. [Using the Software](#using-the-software)
+  - [laundry.machineStatus](#laundrymachinestatus)
+  - [laundry.machineSubCycle](#laundrymachinesubcycle)
+  - [laundry.endOfCycle](#laundryendofcycle)
+  - [laundry.cycleCount](#laundrycyclecount)
+  - [laundry.dryerServiceErrorCodes](#laundrydryerserviceerrorcodes)
+  - [laundry.dsmOverridesAllowed](#laundrydsmoverridesallowed)
+  - [laundry.maximumWaterTemperature](#laundrymaximumwatertemperature)
+  - [laundry.timeRemainingInSeconds](#laundrytimetemaininginseconds)
+  - [laundry.tankStatus](#laundrytankstatus)
+  - [laundry.tankSelected](#laundrytankselected)
+  - [laundry.cycleSelected](#laundrycycleselected)
+  - [laundry.washerUserInterfaceServiceErrorCodes](#laundrywasheruserinterfaceserviceerrorcodes)
+  - [laundry.washerInverterServiceErrorCodes](#laundrywasherinverterserviceerrorcodes)
+  - [laundry.washerMainControlServiceErrorCodes](#laundrywashermaincontrolserviceerrorcodes)
+  - [laundry.operatingMode](#laundryoperatingmode)
+  - [laundry.dryerCriticalResponseEnabled](#laundrydryercriticalresponseenabled)
+  - [laundry.delayTimeRemainingInMinutes](#laundrydelaytimeremaininginminutes)
+1. [Appendix](#appendix)
   - [Machine status](#machine-status)
   - [Machine sub cycle](#machine-sub-cycle)
   - [End of cycle](#end-of-cycle)
@@ -39,63 +38,22 @@ This node.js package provides functionality for communicating with a clothes was
   - [Operating mode](#operating-mode)
   - [Critical response](#critical-response)
 
-## Installation
-To install this application using the node.js package manager, issue the following commands:
-
-```
-npm install git+https://github.com/GEMakers/gea-plugin-laundry.git
-```
-
-To include the plugin in your application, use the *plugin* function after configuring your application.
-
-``` javascript
-var gea = require("gea-sdk");
-var adapter = require("gea-adapter-usb");
-
-// configure your application
-var app = gea.configure({
-    address: 0xcb
-});
-
-// include the laundry plugin in your application
-app.plugin(require("gea-plugin-laundry"));
-
-// bind to the adapter to access the bus
-app.bind(adapter, function (bus) {
-    // the bus now has all of the laundry plugin functions
-});
-```
-
-## Laundry API
-Below is the documentation for each of the functions provided by this plugin, as well as a few examples showing how to use them.
-
-### *bus.on("laundry", callback)*
-This event is emitted whenever a laundry has been discovered on the bus.
-A laundry object is passed from the plugin to the function.
-This laundry object inherits all functions and properties from the appliance object.
-
-``` javascript
-app.bind(adapter, function (bus) {
-    bus.on("laundry", function (laundry) {
-        console.log("address:", laundry.address);
-        console.log("version:", laundry.version.join("."));
-    });
-});
-```
+### Using the Software
+Below are a few node.js applications that demonstrate how to use this package to interact with a clothes washer or dryer.
 
 ### *laundry.machineStatus*
 The machine status is a read-only integer value of the [machine status](#machine-status) enumeration.
 
 ``` javascript
-app.bind(adapter, function (bus) {
-    bus.on("laundry", function (laundry) {
-        laundry.machineStatus.read(function (value) {
-            console.log("read:", value);
-        });
-        
-        laundry.machineStatus.subscribe(function (value) {
-            console.log("subscribe:", value);
-        });
+var greenBean = require("green-bean");
+
+greenBean.connect("laundry", function(laundry) {
+    laundry.machineStatus.read(function (value) {
+        console.log("machine status is:", value);
+    });
+
+    laundry.machineStatus.subscribe(function (value) {
+        console.log("machine status changed:", value);
     });
 });
 ```
@@ -104,15 +62,15 @@ app.bind(adapter, function (bus) {
 The machine sub cycle is a read-only integer value of the [machine sub cycle](#machine-sub-cycle) enumeration.
 
 ``` javascript
-app.bind(adapter, function (bus) {
-    bus.on("laundry", function (laundry) {
-        laundry.machineSubCycle.read(function (value) {
-            console.log("read:", value);
-        });
-        
-        laundry.machineSubCycle.subscribe(function (value) {
-            console.log("subscribe:", value);
-        });
+var greenBean = require("green-bean");
+
+greenBean.connect("laundry", function(laundry) {
+    laundry.machineSubCycle.read(function (value) {
+        console.log("machien sub-cycle is:", value);
+    });
+
+    laundry.machineSubCycle.subscribe(function (value) {
+        console.log("machien sub-cycle changed:", value);
     });
 });
 ```
@@ -121,15 +79,15 @@ app.bind(adapter, function (bus) {
 The end of cycle is a read-only integer value of the [end of cycle](#end-of-cycle) enumeration.
 
 ``` javascript
-app.bind(adapter, function (bus) {
-    bus.on("laundry", function (laundry) {
-        laundry.endOfCycle.read(function (value) {
-            console.log("read:", value);
-        });
-        
-        laundry.endOfCycle.subscribe(function (value) {
-            console.log("subscribe:", value);
-        });
+var greenBean = require("green-bean");
+
+greenBean.connect("laundry", function(laundry) {
+    laundry.endOfCycle.read(function (value) {
+        console.log("end of cycle is:", value);
+    });
+
+    laundry.endOfCycle.subscribe(function (value) {
+        console.log("end of cycle changed:", value);
     });
 });
 ```
@@ -138,15 +96,15 @@ app.bind(adapter, function (bus) {
 The cycle count is a read-only unsigned integer representing a running total of the number of cycles that have been run.
 
 ``` javascript
-app.bind(adapter, function (bus) {
-    bus.on("laundry", function (laundry) {
-        laundry.cycleCount.read(function (value) {
-            console.log("read:", value);
-        });
-        
-        laundry.cycleCount.subscribe(function (value) {
-            console.log("subscribe:", value);
-        });
+var greenBean = require("green-bean");
+
+greenBean.connect("laundry", function(laundry) {
+    laundry.cycleCount.read(function (value) {
+        console.log("cycle count is:", value);
+    });
+
+    laundry.cycleCount.subscribe(function (value) {
+        console.log("cycle count changed:", value);
     });
 });
 ```
@@ -155,15 +113,15 @@ app.bind(adapter, function (bus) {
 The dryer service error codes are a read-only integer representing the [dryer error codes](#dryer-error-codes) bit field.
 
 ``` javascript
-app.bind(adapter, function (bus) {
-    bus.on("laundry", function (laundry) {
-        laundry.dryerServiceErrorCodes.read(function (value) {
-            console.log("read:", value);
-        });
-        
-        laundry.dryerServiceErrorCodes.subscribe(function (value) {
-            console.log("subscribe:", value);
-        });
+var greenBean = require("green-bean");
+
+greenBean.connect("laundry", function(laundry) {
+    laundry.dryerServiceErrorCodes.read(function (value) {
+        console.log("dryer service error codes are:", value);
+    });
+
+    laundry.dryerServiceErrorCodes.subscribe(function (value) {
+        console.log("dryer service error codes changed:", value);
     });
 });
 ```
@@ -172,18 +130,18 @@ app.bind(adapter, function (bus) {
 The DSM overrides allowed is an integer value of the [DSM overrides allowed](#dsm-overrides-allowed) enumeration.
 
 ``` javascript
-app.bind(adapter, function (bus) {
-    bus.on("laundry", function (laundry) {
-        laundry.dsmOverridesAllowed.read(function (value) {
-            console.log("read:", value);
-        });
-        
-        laundry.dsmOverridesAllowed.subscribe(function (value) {
-            console.log("subscribe:", value);
-        });
-        
-        laundry.dsmOverridesAllowed.write(1);
+var greenBean = require("green-bean");
+
+greenBean.connect("laundry", function(laundry) {
+    laundry.dsmOverridesAllowed.read(function (value) {
+        console.log("DSM overrides allowed is:", value);
     });
+
+    laundry.dsmOverridesAllowed.subscribe(function (value) {
+        console.log("DSM overrides allowed changed:", value);
+    });
+
+    laundry.dsmOverridesAllowed.write(1);
 });
 ```
 
@@ -191,18 +149,18 @@ app.bind(adapter, function (bus) {
 The maximum water temperature is an integer value of the [water temperature](#water-temperature) enumeration.
 
 ``` javascript
-app.bind(adapter, function (bus) {
-    bus.on("laundry", function (laundry) {
-        laundry.maximumWaterTemperature.read(function (value) {
-            console.log("read:", value);
-        });
-        
-        laundry.maximumWaterTemperature.subscribe(function (value) {
-            console.log("subscribe:", value);
-        });
-        
-        laundry.maximumWaterTemperature.write(6);
+var greenBean = require("green-bean");
+
+greenBean.connect("laundry", function(laundry) {
+    laundry.maximumWaterTemperature.read(function (value) {
+        console.log("maximum water temperature is:", value);
     });
+
+    laundry.maximumWaterTemperature.subscribe(function (value) {
+        console.log("maximum water temperature changed:", value);
+    });
+
+    laundry.maximumWaterTemperature.write(6);
 });
 ```
 
@@ -210,15 +168,15 @@ app.bind(adapter, function (bus) {
 The time remaining is a read-only integer representing the amount of time remaining in the current cycle (in seconds).
 
 ``` javascript
-app.bind(adapter, function (bus) {
-    bus.on("laundry", function (laundry) {
-        laundry.timeRemainingInSeconds.read(function (value) {
-            console.log("read:", value);
-        });
-        
-        laundry.timeRemainingInSeconds.subscribe(function (value) {
-            console.log("subscribe:", value);
-        });
+var greenBean = require("green-bean");
+
+greenBean.connect("laundry", function(laundry) {
+    laundry.timeRemainingInSeconds.read(function (value) {
+        console.log("time remaining is:", value);
+    });
+
+    laundry.timeRemainingInSeconds.subscribe(function (value) {
+        console.log("time remaining changed:", value);
     });
 });
 ```
@@ -229,15 +187,15 @@ The tank status is a read-only object with the following fields:
 - tankPercentageRemaining (an unsigned integer between 0 and 100, inclusive)
 
 ``` javascript
-app.bind(adapter, function (bus) {
-    bus.on("laundry", function (laundry) {
-        laundry.tankStatus.read(function (value) {
-            console.log("read:", value);
-        });
-        
-        laundry.tankStatus.subscribe(function (value) {
-            console.log("subscribe:", value);
-        });
+var greenBean = require("green-bean");
+
+greenBean.connect("laundry", function(laundry) {
+    laundry.tankStatus.read(function (value) {
+        console.log("tank status is:", value);
+    });
+
+    laundry.tankStatus.subscribe(function (value) {
+        console.log("tank status changed:", value);
     });
 });
 ```
@@ -248,15 +206,15 @@ The tank selected is a read-only object with the following fields:
 - tankEnabled (zero for disabled, one for enabled)
 
 ``` javascript
-app.bind(adapter, function (bus) {
-    bus.on("laundry", function (laundry) {
-        laundry.tankSelected.read(function (value) {
-            console.log("read:", value);
-        });
-        
-        laundry.tankSelected.subscribe(function (value) {
-            console.log("subscribe:", value);
-        });
+var greenBean = require("green-bean");
+
+greenBean.connect("laundry", function(laundry) {
+    laundry.tankSelected.read(function (value) {
+        console.log("selected tank is:", value);
+    });
+
+    laundry.tankSelected.subscribe(function (value) {
+        console.log("selected tank changed:", value);
     });
 });
 ```
@@ -265,15 +223,15 @@ app.bind(adapter, function (bus) {
 The cycle selected is a read-only integer value of the [cycle selected](#cycle-selected) enumeration.
 
 ``` javascript
-app.bind(adapter, function (bus) {
-    bus.on("laundry", function (laundry) {
-        laundry.cycleSelected.read(function (value) {
-            console.log("read:", value);
-        });
-        
-        laundry.cycleSelected.subscribe(function (value) {
-            console.log("subscribe:", value);
-        });
+var greenBean = require("green-bean");
+
+greenBean.connect("laundry", function(laundry) {
+    laundry.cycleSelected.read(function (value) {
+        console.log("selected cycle is:", value);
+    });
+
+    laundry.cycleSelected.subscribe(function (value) {
+        console.log("selected cycle changed:", value);
     });
 });
 ```
@@ -282,15 +240,15 @@ app.bind(adapter, function (bus) {
 The washer user interface service error codes are a read-only integer representing the [washer user interface error codes](#washer-user-interface-error-codes) bit field.
 
 ``` javascript
-app.bind(adapter, function (bus) {
-    bus.on("laundry", function (laundry) {
-        laundry.washerUserInterfaceServiceErrorCodes.read(function (value) {
-            console.log("read:", value);
-        });
-        
-        laundry.washerUserInterfaceServiceErrorCodes.subscribe(function (value) {
-            console.log("subscribe:", value);
-        });
+var greenBean = require("green-bean");
+
+greenBean.connect("laundry", function(laundry) {
+    laundry.washerUserInterfaceServiceErrorCodes.read(function (value) {
+        console.log("washer user interface error codes are:", value);
+    });
+
+    laundry.washerUserInterfaceServiceErrorCodes.subscribe(function (value) {
+        console.log("washer user interface error codes changed:", value);
     });
 });
 ```
@@ -299,15 +257,15 @@ app.bind(adapter, function (bus) {
 The washer inverter service error codes are a read-only integer representing the [washer inverter error codes](#washer-inverter-error-codes) bit field.
 
 ``` javascript
-app.bind(adapter, function (bus) {
-    bus.on("laundry", function (laundry) {
-        laundry.washerInverterServiceErrorCodes.read(function (value) {
-            console.log("read:", value);
-        });
-        
-        laundry.washerInverterServiceErrorCodes.subscribe(function (value) {
-            console.log("subscribe:", value);
-        });
+var greenBean = require("green-bean");
+
+greenBean.connect("laundry", function(laundry) {
+    laundry.washerInverterServiceErrorCodes.read(function (value) {
+        console.log("washer inverter service error codes are:", value);
+    });
+
+    laundry.washerInverterServiceErrorCodes.subscribe(function (value) {
+        console.log("washer inverter service error codes changed:", value);
     });
 });
 ```
@@ -316,15 +274,15 @@ app.bind(adapter, function (bus) {
 The washer main control service error codes are a read-only integer representing the [washer main control error codes](#washer-main-control-error-codes) bit field.
 
 ``` javascript
-app.bind(adapter, function (bus) {
-    bus.on("laundry", function (laundry) {
-        laundry.washerMainControlServiceErrorCodes.read(function (value) {
-            console.log("read:", value);
-        });
-        
-        laundry.washerMainControlServiceErrorCodes.subscribe(function (value) {
-            console.log("subscribe:", value);
-        });
+var greenBean = require("green-bean");
+
+greenBean.connect("laundry", function(laundry) {
+    laundry.washerMainControlServiceErrorCodes.read(function (value) {
+        console.log("washer main control service error codes are:", value);
+    });
+
+    laundry.washerMainControlServiceErrorCodes.subscribe(function (value) {
+        console.log("washer main control service error codes changed:", value);
     });
 });
 ```
@@ -333,15 +291,15 @@ app.bind(adapter, function (bus) {
 The operating mode is a read-only integer value of the [operating mode](#operating-mode) enumeration.
 
 ``` javascript
-app.bind(adapter, function (bus) {
-    bus.on("laundry", function (laundry) {
-        laundry.operatingMode.read(function (value) {
-            console.log("read:", value);
-        });
-        
-        laundry.operatingMode.subscribe(function (value) {
-            console.log("subscribe:", value);
-        });
+var greenBean = require("green-bean");
+
+greenBean.connect("laundry", function(laundry) {
+    laundry.operatingMode.read(function (value) {
+        console.log("operating mode is:", value);
+    });
+
+    laundry.operatingMode.subscribe(function (value) {
+        console.log("operating mode changed:", value);
     });
 });
 ```
@@ -350,18 +308,18 @@ app.bind(adapter, function (bus) {
 The operating mode is an integer value of the [critical response](#critical-response) enumeration.
 
 ``` javascript
-app.bind(adapter, function (bus) {
-    bus.on("laundry", function (laundry) {
-        laundry.dryerCriticalResponseEnabled.read(function (value) {
-            console.log("read:", value);
-        });
-        
-        laundry.dryerCriticalResponseEnabled.subscribe(function (value) {
-            console.log("subscribe:", value);
-        });
-        
-        laundry.dryerCriticalResponseEnabled.write(1);
+var greenBean = require("green-bean");
+
+greenBean.connect("laundry", function(laundry) {
+    laundry.dryerCriticalResponseEnabled.read(function (value) {
+        console.log("dryer critical response enabled is:", value);
     });
+
+    laundry.dryerCriticalResponseEnabled.subscribe(function (value) {
+        console.log("dryer critical response enabled changed:", value);
+    });
+
+    laundry.dryerCriticalResponseEnabled.write(1);
 });
 ```
 
@@ -369,15 +327,15 @@ app.bind(adapter, function (bus) {
 The delay time remaining is a read-only integer representing the amount of time remaining for the delay (in minutes).
 
 ``` javascript
-app.bind(adapter, function (bus) {
-    bus.on("laundry", function (laundry) {
-        laundry.delayTimeRemainingInMinutes.read(function (value) {
-            console.log("read:", value);
-        });
-        
-        laundry.delayTimeRemainingInMinutes.subscribe(function (value) {
-            console.log("subscribe:", value);
-        });
+var greenBean = require("green-bean");
+
+greenBean.connect("laundry", function(laundry) {
+    laundry.delayTimeRemainingInMinutes.read(function (value) {
+        console.log("delay time remaining is:", value);
+    });
+
+    laundry.delayTimeRemainingInMinutes.subscribe(function (value) {
+        console.log("delay time remaining changed:", value);
     });
 });
 ```

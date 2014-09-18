@@ -3,6 +3,31 @@
 
 This node.js package provides functionality for communicating with a clothes washer or dryer via the [General Electric Appliance Software Development Kit](https://github.com/GEMakers/gea-sdk). In order to use this software, you must first connect your appliance to your computer using the [Green Bean](https://github.com/GEMakers/green-bean).
 
+&#x26a0; WARNING: To prevent a risk of personal injury or property damage use this device and the API to modify the functionality of your GE Appliance only as directed in the [Guide to Safe and Reliable Operation](#guide-to-safe-and-reliable-operation). While an appliance operates in Consumer Mode, the control software applies algorithms that help protect consumers from a risk of personal injury or property damage. However, in Native Mode, these algorithms are not active. Therefore you must follow all guidelines for Safe/Reliable Operation detailed below to prevent a risk of personal injury or property damage that can arise during Native Mode Operation.
+
+## Guide to Safe and Reliable Operation
+The interface between the green bean and the range can take place while the range is in either a consumer or a native mode.
+
+
+**Consumer mode** allows developers to access the high-level algorithms of an appliance, such as sensor dry and timed dry.
+In consumer mode a user is unable change the low level functions that govern how the cook cycle runs.
+
+
+**Native mode** allows a developer to create the low-level algorithms of an appliance, such as direct control of motors, fans, actuators, heaters, and other controlled devices.
+While in native mode, high-level algorithms, such as sensor dry and timed dry, are not operational.
+Native mode allows a developer to, for example, create a new drying algorithm by controlling the loads in a desired manner.
+While operating in native mode, the developer must adhere to the following rules:
+
+1. Operation of Heaters and Drum Motor is prohibited with the door open.  Hardware interlock exists that prevents operation unless door is closed but relays should not be driven prior to door being closed to prevent the door contact from switching the current.
+1. Heaters should only be operated when drum is moving in a clockwise direction.
+1. A hardware interlock (centrifugal switch) exists that blocks the heater operation unless the drum motor is running. Drum motor should be running (in a clockwise direction) for a period of time to allow the centrifugal switch to close prior to turning on heaters. Likewise, heaters should be turned off prior to stopping the drum motor and opening the centrifugal switch. This prevents the centrifugal switch from switching current and increases overall reliability.
+1. At the end of a cycle continue to rotate without heater operation for a period of time to reduce temperatures of clothing.
+1. Do not operate the unit without appropriate oversight.  
+1. Valve operations should be time limited to prevent water damage.
+1. To prevent dryer damage, drum motor relay must be off for 6 seconds before changing directions and reenergizing the relay in order to allow drum to come to a complete stop prior to changing direction.
+1. Excessive relay cycling can shorten the life of the relays.
+1. To maintain native mode operation, the native mode command must be sent at least once every 5 minutes (2.5 minute periodic rate is recommended).
+
 ## Overview
 
 1. [Using the Software](#using-the-software)

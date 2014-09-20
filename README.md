@@ -91,11 +91,11 @@ var greenBean = require("green-bean");
 
 greenBean.connect("laundry", function(laundry) {
     laundry.machineSubCycle.read(function (value) {
-        console.log("machien sub-cycle is:", value);
+        console.log("machine sub-cycle is:", value);
     });
 
     laundry.machineSubCycle.subscribe(function (value) {
-        console.log("machien sub-cycle changed:", value);
+        console.log("machine sub-cycle changed:", value);
     });
 });
 ```
